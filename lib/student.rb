@@ -47,12 +47,10 @@ class Student
   end
 
   def self.new_from_db(row)
-    binding.pry
-    x = Student.new
-    x.id = row[0]
-    x.name = row[1]
-    x.grade = row[2]
-    x = self.new(x.name, x.grade, x.id)
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    x = self.new(name, grade, id)
     return x
   end
 
