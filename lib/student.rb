@@ -29,44 +29,44 @@ class Student
   end
 
   def save
-   if self.id
-    self.update
-   else
+    if self.id
+      self.update
+    else
+      sql = <<-SQL
+      INSERT INTO students (name, grade) VALUES (?, ?)
+      SQL
+      DB[:conn].execute(sql, self.name, self.grade)
+      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students;")[0][0]
+    end
+  end
+
+  def self.create(name:, grade:)
+    x = self.new(name, grade)
+    x.save
+    x
+  end
+
+  def self.new_from_db(row)
+    x = self.new
+    x.id = row[0]
+    x.name = row[1]
+    x.grade = row[2]
+    return x
+  end
+
+  def self.find_by_name(name)
     sql = <<-SQL
-    INSERT INTO students (name, grade) VALUES (?, ?)
+    SELECT * FROM students WHERE name = ? LIMIT 1
     SQL
-    DB[:conn].execute(sql, self.name, self.grade)
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students;")[0][0]
+    DB[:conn].execute(sql, name).map do |row|
+      self.new_from_db(row)
+    end.first
   end
+
+  def update
+    sql = <<-SQL
+    UPDATE students SET name = ?, grade = ? WHERE id = ?
+    SQL
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
-
-  # def self.create(name:, grade:)
-  #   x = self.new(name, grade)
-  #   x.save
-  #   x
-  # end
-
-  # def self.new_from_db(row)
-  #   x = self.new
-  #   x.id = row[0]
-  #   x.name = row[1]
-  #   x.grade = row[2]
-  #   return x
-  # end
-
-  # def self.find_by_name(name)
-  #   sql = <<-SQL
-  #   SELECT * FROM students WHERE name = ? LIMIT 1
-  #   SQL
-  #   DB[:conn].execute(sql, name).map do |row|
-  #     self.new_from_db(row)
-  #   end.first
-  # end
-
-  # def update
-  #   sql = <<-SQL
-  #   UPDATE students SET name = ?, grade = ? WHERE id = ?
-  #   SQL
-  #   DB[:conn].execute(sql, self.name, self.grade, self.id)
-  # end
 end
