@@ -25,7 +25,7 @@ def self.drop_table
   sql = <<-SQL
   DROP TABLE self
   SQL
-  DB[:conn](sql)
+  DB[:conn].execute(sql)
 end
 
 end
