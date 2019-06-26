@@ -23,9 +23,9 @@ end
 
 def self.drop_table
   sql = <<-SQL
-  DROP TABLE self
+  DROP TABLE ?
   SQL
-  DB[:conn].execute(sql)
+  DB[:conn].execute(sql, self)
 end
 
 end
