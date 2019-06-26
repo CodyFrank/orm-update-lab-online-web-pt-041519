@@ -45,4 +45,12 @@ def self.create(name:, grade:)
   x
 end
 
+def self.new_from_db(row)
+  x = self.new
+  x.id = row[0]
+  x.name = row[1]
+  x.grade = row[2]
+  x
+end
+
 end
